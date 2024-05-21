@@ -1,6 +1,9 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+#include <pybind11/pybind11.h>
+
+namespace py = pybind11;
 
 using namespace std;
 string files[99] = {"lagu1.txt", "lagu2.txt", "lagu3.txt"};//deklarasi arrray untuk nama file//
@@ -38,6 +41,18 @@ string cariLirik(const string &cari) {
     }
     return judul;
 }
+
+
+void tambahLagu(string judul, string lirik){
+  ofstream file_judul("lagu.txt", ios::app);
+  file_judul << judul << endl;
+  file_judul.close();
+  
+  ofstream file_lirik("lirik/" + judul + ".txt");
+  file_lirik << lirik << endl;
+  file_lirik.close();
+}
+
 int main() {
     string lirik;
     cout << "Masukkan Lirik: ";
@@ -45,3 +60,12 @@ int main() {
     cariLirik(lirik);
     return 0;
 }
+
+
+PYBIND11_MODULE(cpp, handle){
+  handle.doc() = "Save songs and lyrics!";
+  handle.def("tambah_lagu", &tambahLagu);
+}
+
+
+
